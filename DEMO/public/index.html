@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text-to-Speech en Español</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">
+                <i class="fas fa-microphone-alt text-blue-600"></i>
+                Text-to-Speech en Español
+            </h1>
+            <p class="text-gray-600">Convierte texto a voz usando las voces oficiales de Google 2025</p>
+        </div>
+
+        <!-- Main Card -->
+        <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-xl p-6">
+            <!-- Text Input Section -->
+            <div class="mb-6">
+                <label for="textInput" class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-edit text-blue-500"></i>
+                    Texto a convertir
+                </label>
+                <textarea 
+                    id="textInput" 
+                    rows="4" 
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 resize-none"
+                    placeholder="Escribe aquí el texto que quieres convertir a voz..."
+                >Hola, esto es una prueba del sistema de text-to-speech en español con las voces oficiales de Google.</textarea>
+            </div>
+
+            <!-- Voice Selection Section -->
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <!-- Voice Selector -->
+                <div>
+                    <label for="voiceSelect" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-user-tie text-green-500"></i>
+                        Seleccionar Voz
+                    </label>
+                    <select id="voiceSelect" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">Cargando voces...</option>
+                    </select>
+                </div>
+
+                <!-- Voice Info -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-info-circle text-purple-500"></i>
+                        Información de la Voz
+                    </label>
+                    <div id="voiceInfo" class="px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-sm text-gray-600">
+                        Selecciona una voz para ver la información
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controls Section -->
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <!-- Speed Control -->
+                <div>
+                    <label for="speedRange" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-tachometer-alt text-orange-500"></i>
+                        Velocidad: <span id="speedValue">1.0</span>x
+                    </label>
+                    <input 
+                        type="range" 
+                        id="speedRange" 
+                        min="0.25" 
+                        max="4.0" 
+                        step="0.25" 
+                        value="1.0"
+                        class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                    >
+                </div>
+
+                <!-- Pitch Control -->
+                <div>
+                    <label for="pitchRange" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-music text-pink-500"></i>
+                        Tono: <span id="pitchValue">0.0</span>
+                    </label>
+                    <input 
+                        type="range" 
+                        id="pitchRange" 
+                        min="-20.0" 
+                        max="20.0" 
+                        step="1.0" 
+                        value="0.0"
+                        class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                    >
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-wrap gap-4 justify-center mb-6">
+                <button 
+                    id="synthesizeBtn" 
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-200 flex items-center gap-2"
+                >
+                    <i class="fas fa-play"></i>
+                    Generar Voz
+                </button>
+                
+                <button 
+                    id="stopBtn" 
+                    class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-200 flex items-center gap-2 disabled:opacity-50"
+                    disabled
+                >
+                    <i class="fas fa-stop"></i>
+                    Detener
+                </button>
+                
+                <button 
+                    id="downloadBtn" 
+                    class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-200 flex items-center gap-2 disabled:opacity-50"
+                    disabled
+                >
+                    <i class="fas fa-download"></i>
+                    Descargar Audio
+                </button>
+            </div>
+
+            <!-- Audio Player -->
+            <div id="audioContainer" class="hidden mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-volume-up text-indigo-500"></i>
+                    Reproductor de Audio
+                </label>
+                <audio id="audioPlayer" controls class="w-full">
+                    Tu navegador no soporta el elemento de audio.
+                </audio>
+            </div>
+
+            <!-- Loading Indicator -->
+            <div id="loadingIndicator" class="hidden text-center py-4">
+                <div class="inline-flex items-center">
+                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span class="text-blue-600 font-medium">Generando audio...</span>
+                </div>
+            </div>
+
+            <!-- Status Messages -->
+            <div id="statusMessage" class="hidden p-4 rounded-md mb-4"></div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-8 text-gray-500 text-sm">
+            <p>Powered by Google Cloud Text-to-Speech API 2025</p>
+            <p class="mt-1">
+                <i class="fas fa-flag"></i>
+                Voces oficiales en español: España, México, Argentina
+            </p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

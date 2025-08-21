@@ -1,0 +1,90 @@
+# Dependencies
+node_modules/
+*/node_modules/
+**/node_modules/
+
+# Build outputs
+dist/
+build/
+*.build/
+.output/
+
+# Logs
+*.log
+combined.log
+error.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Uploads
+uploads/
+tmp/
+temp/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+
+# Subagent state
+subagent_state.json
+
+# PDF files (if generated)
+*.pdf
+
+# EPUB files
+*.epub
+
+# Audio files
+*.mp3
+*.wav
+*.ogg
+
+# Video files
+*.mp4
+*.avi
+*.mov
+
+# Cache
+.cache/
+.parcel-cache/
+
+# Testing
+coverage/
+.nyc_output/
+
+# Misc
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Proyectos anidados - mantener como subcarpetas normales
+# fixter2025 es un proyecto independiente con su propio repo
+fixter2025/

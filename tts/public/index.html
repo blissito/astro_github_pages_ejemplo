@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TTS App - Texto a Voz</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            margin: 1rem 0;
+        }
+        
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        h2 {
+            color: #4a5568;
+            margin-bottom: 1rem;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            resize: vertical;
+            margin-bottom: 1rem;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        select, input[type="range"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            width: 100%;
+            margin: 0.5rem 0;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+        }
+        
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #4a5568;
+        }
+        
+        .audio-player {
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .status {
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .status.success {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+        
+        .status.error {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+        
+        .status.loading {
+            background: #bee3f8;
+            color: #2a4365;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        
+        function TTSApp() {
+            const [text, setText] = useState('');
+            const [voices, setVoices] = useState([]);
+            const [selectedVoice, setSelectedVoice] = useState('');
+            const [speed, setSpeed] = useState(1.0);
+            const [isLoading, setIsLoading] = useState(false);
+            const [status, setStatus] = useState('');
+            const [audioUrl, setAudioUrl] = useState('');
+            
+            useEffect(() => {
+                loadVoices();
+            }, []);
+            
+            const loadVoices = async () => {
+                try {
+                    const response = await axios.get('/api/tts/voices');
+                    if (response.data.success) {
+                        setVoices(response.data.data);
+                        if (response.data.data.length > 0) {
+                            setSelectedVoice(response.data.data[0].voice_id);
+                        }
+                    }
+                } catch (error) {
+                    setStatus('Error al cargar las voces');
+                }
+            };
+            
+            const synthesizeText = async () => {
+                if (!text.trim()) {
+                    setStatus('Por favor, introduce un texto');
+                    return;
+                }
+                
+                setIsLoading(true);
+                setStatus('Generando audio...');
+                setAudioUrl('');
+                
+                try {
+                    const response = await axios.post('/api/tts/synthesize', {
+                        text: text,
+                        voice: {
+                            voice_id: selectedVoice,
+                            provider: 'google'
+                        },
+                        options: {
+                            speed: speed,
+                            format: 'mp3'
+                        }
+                    });
+                    
+                    if (response.data.success) {
+                        setStatus('¡Audio generado exitosamente!');
+                        setAudioUrl(response.data.data.url);
+                    } else {
+                        setStatus('Error: ' + (response.data.error?.message || 'Error desconocido'));
+                    }
+                } catch (error) {
+                    setStatus('Error al generar el audio: ' + (error.response?.data?.error?.message || error.message));
+                } finally {
+                    setIsLoading(false);
+                }
+            };
+            
+            const getStatusClass = () => {
+                if (isLoading) return 'loading';
+                if (status.includes('Error')) return 'error';
+                if (status.includes('exitosamente')) return 'success';
+                return '';
+            };
+            
+            return (
+                <div className="container">
+                    <h1>🎤 TTS App - Texto a Voz</h1>
+                    
+                    <div className="card">
+                        <h2>Convertir Texto a Voz</h2>
+                        
+                        <div className="form-group">
+                            <label>Texto a convertir:</label>
+                            <textarea
+                                value={text}
+                                onChange={(e) => setText(e.target.value)}
+                                placeholder="Escribe aquí el texto que quieres convertir a voz..."
+                                maxLength={5000}
+                            />
+                            <small>{text.length} / 5000 caracteres</small>
+                        </div>
+                        
+                        <div className="form-group">
+                            <label>Voz:</label>
+                            <select 
+                                value={selectedVoice} 
+                                onChange={(e) => setSelectedVoice(e.target.value)}
+                            >
+                                {voices.map(voice => (
+                                    <option key={voice.voice_id} value={voice.voice_id}>
+                                        {voice.name} ({voice.gender})
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        
+                        <div className="form-group">
+                            <label>Velocidad: {speed}x</label>
+                            <input
+                                type="range"
+                                min="0.5"
+                                max="2"
+                                step="0.1"
+                                value={speed}
+                                onChange={(e) => setSpeed(parseFloat(e.target.value))}
+                            />
+                        </div>
+                        
+                        <button 
+                            onClick={synthesizeText} 
+                            disabled={isLoading || !text.trim()}
+                        >
+                            {isLoading ? '🔄 Generando...' : '🎵 Generar Audio'}
+                        </button>
+                        
+                        {status && (
+                            <div className={`status ${getStatusClass()}`}>
+                                {status}
+                            </div>
+                        )}
+                        
+                        {audioUrl && (
+                            <div className="audio-player">
+                                <label>Audio generado:</label>
+                                <audio controls style={{width: '100%', marginTop: '0.5rem'}}>
+                                    <source src={audioUrl} type="audio/mpeg" />
+                                    Tu navegador no soporta el elemento de audio.
+                                </audio>
+                                <br />
+                                <a 
+                                    href={audioUrl + '/download'} 
+                                    download 
+                                    style={{
+                                        display: 'inline-block',
+                                        marginTop: '0.5rem',
+                                        color: '#667eea',
+                                        textDecoration: 'none',
+                                        fontWeight: '600'
+                                    }}
+                                >
+                                    📥 Descargar Audio
+                                </a>
+                            </div>
+                        )}
+                    </div>
+                    
+                    <div className="card">
+                        <h2>ℹ️ Información</h2>
+                        <p>Esta aplicación utiliza Google Cloud Text-to-Speech con voces Neural2 de alta calidad en español.</p>
+                        <p style={{marginTop: '0.5rem'}}>
+                            <strong>Voces disponibles:</strong> Elena, Carmen, Pablo, Diego, Sofía
+                        </p>
+                    </div>
+                </div>
+            );
+        }
+        
+        ReactDOM.render(<TTSApp />, document.getElementById('root'));
+    </script>
+</body>
+</html>

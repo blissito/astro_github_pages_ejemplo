@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <title>
+      Claude Code Power User - Sesión 2: Técnicas Avanzadas
+    </title>
+    <meta
+      name="description"
+      content="Segunda sesión del taller Claude Code: SDK, Subagentes, Scripting y CI/CD. Evoluciona tu código."
+    />
+    <meta name="author" content="Héctorbliss" />
+    <meta
+      name="keywords"
+      content="Claude SDK, Subagentes, Scripting, CI/CD, GitHub Actions, Automatización, FixterGeek"
+    />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://fixtergeek.com/claude" />
+    <meta
+      property="og:title"
+      content="Claude Code Power User - Sesión 2: Técnicas Avanzadas"
+    />
+    <meta
+      property="og:description"
+      content="Domina el SDK de Claude, subagentes especializados, scripting avanzado y pipelines CI/CD."
+    />
+    <meta
+      property="og:image"
+      content="https://winbuzzer.com/wp-content/uploads/2025/07/Claude-Code.jpg"
+    />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.5/reveal.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.5/theme/black.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.5/plugin/highlight/monokai.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --bg-color: #1e1e2e;
+        --text-color: #f8f8f2;
+        --brand-700: #37ab93;
+        --brand-800: #186656;
+        --brand-500: #37ab93;
+        --accent-color: #bd93f9;
+        --code-bg: #2e2e3e;
+      }
+
+      .reveal {
+        font-family: "Space Grotesk", "Segoe UI", Tahoma, Geneva, Verdana,
+          sans-serif;
+        background: linear-gradient(
+          135deg,
+          #76d3cb 0%,
+          #3a918a 50%,
+          #27605b 100%
+        );
+        color: var(--text-color);
+      }
+
+      .reveal .slides {
+        padding: 0;
+      }
+
+      .reveal .slides section {
+        background: white;
+        color: #2c3e50;
+        border-radius: 20px;
+        padding: 30px;
+        margin: 10px auto;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        max-width: 85vw;
+        min-height: 80vh;
+        overflow: visible;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+      }
+
+      .reveal h1,
+      .reveal h2,
+      .reveal h3,
+      .reveal h4,
+      .reveal h5,
+      .reveal h6 {
+        font-family: "Space Grotesk", sans-serif;
+        font-weight: 600;
+        text-transform: none;
+        margin: 0.3em 0;
+      }
+
+      .reveal h1 {
+        color: var(--brand-700);
+        font-size: 1em;
+        font-weight: 700;
+      }
+
+      .reveal h2 {
+        color: var(--brand-800);
+        font-size: 0.85em;
+      }
+
+      .reveal h3 {
+        color: var(--brand-500);
+        font-size: 0.75em;
+      }
+
+      .reveal h4,
+      .reveal h5,
+      .reveal h6 {
+        color: var(--brand-500);
+      }
+
+      .reveal p,
+      .reveal li {
+        font-size: 0.6em;
+        line-height: 1.3;
+        margin-bottom: 0.4em;
+      }
+
+      .reveal blockquote {
+        background: rgba(133, 221, 203, 0.1);
+        border-left: 4px solid var(--brand-500);
+        color: var(--brand-800);
+        padding: 10px;
+        margin: 10px 0;
+        font-style: italic;
+        border-radius: 8px;
+        font-size: 0.6em;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .reveal code {
+        background-color: #f1f3f4;
+        color: var(--brand-800);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-family: "Fira Code", "Monaco", "Consolas", monospace;
+      }
+
+      .reveal pre code {
+        background-color: var(--code-bg);
+        padding: 20px;
+        border-radius: 8px;
+        max-height: 400px;
+        overflow-y: auto;
+      }
+
+      .reveal ul,
+      .reveal ol {
+        margin: 0 0 1em 1em;
+      }
+
+      .reveal li {
+        margin-bottom: 0.3em;
+      }
+
+      .reveal strong {
+        color: var(--brand-500);
+        font-weight: 600;
+      }
+
+      .reveal em {
+        color: var(--accent-color);
+        font-style: italic;
+      }
+
+      .reveal img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin: 20px 0;
+      }
+
+      .reveal .lead h1 {
+        font-size: 1.2em;
+        margin-bottom: 0.8em;
+      }
+
+      .reveal .lead h3 {
+        font-size: 0.75em;
+        opacity: 0.9;
+      }
+
+      .reveal a {
+        color: var(--brand-500);
+        text-decoration: none;
+      }
+
+      .reveal a:hover {
+        color: var(--brand-700);
+      }
+
+      .reveal .controls {
+        color: var(--brand-500);
+      }
+
+      .reveal .progress {
+        color: var(--brand-700);
+      }
+
+      .reveal .slide-background {
+        background: linear-gradient(
+          135deg,
+          #76d3cb 0%,
+          #3a918a 50%,
+          #27605b 100%
+        );
+      }
+
+      /* Specific styling for certain elements */
+      .price-strike {
+        text-decoration: line-through;
+        opacity: 0.7;
+      }
+
+      .highlight {
+        background: rgba(55, 171, 147, 0.2);
+        padding: 2px 6px;
+        border-radius: 4px;
+        color: var(--brand-500);
+      }
+
+      /* Center alignment for lead slides */
+      .reveal .lead {
+        text-align: center;
+      }
+
+      /* Code block styling */
+      .reveal pre {
+        font-size: 0.5em;
+        width: 100%;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      }
+
+      /* Terminal styling */
+      .terminal {
+        background: #1e1e1e;
+        color: #f8f8f2;
+        padding: 15px;
+        border-radius: 8px;
+        font-family: "Fira Code", monospace;
+        font-size: 0.5em;
+        margin: 10px 0;
+      }
+
+      .terminal-prompt {
+        color: #50fa7b;
+      }
+
+      /* Badge styling */
+      .badge {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.8em;
+        font-weight: 600;
+        margin: 0 4px;
+      }
+
+      .badge-new {
+        background: #50fa7b;
+        color: #282a36;
+      }
+
+      .badge-pro {
+        background: #bd93f9;
+        color: white;
+      }
+
+      .badge-beta {
+        background: #ff79c6;
+        color: white;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <!-- Slide 1: Title -->
+        <section class="lead">
+          <h1>🚀 Claude Code Power User - Sesión 2</h1>
+          <h2>Técnicas Avanzadas y Automatización</h2>
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Claude_AI_logo.svg/1280px-Claude_AI_logo.svg.png"
+            alt="Claude Logo"
+            style="max-width: 250px"
+          />
+          <h3>SDK • Subagentes • Scripting • CI/CD</h3>
+          <p><strong>Instructor:</strong> @blissito</p>
+          <p><strong>Fecha:</strong> 21 de agosto 2025</p>
+        </section>
+
+        <!-- Slide 2: Agenda -->
+        <section>
+          <h1>📋 Agenda de Hoy</h1>
+          <h2>Vamos a construir un proyecto completo</h2>
+          <ul>
+            <li>🔧 <strong>Claude SDK:</strong> Integración programática con Claude</li>
+            <li>🤖 <strong>Subagentes Especializados:</strong> Trabajo en paralelo</li>
+            <li>📝 <strong>Scripting Avanzado:</strong> Automatización de tareas</li>
+            <li>🚀 <strong>CI/CD con GitHub Actions:</strong> Deploy automático</li>
+            <li>🔑 <strong>GitHub Key (Plan Max):</strong> Configuración especial</li>
+            <li>🎨 <strong>Powerline Personalizada:</strong> Status visual con colores</li>
+          </ul>
+          <blockquote>
+            "Hoy convertiremos a Claude en tu equipo de desarrollo personal"
+          </blockquote>
+        </section>
+
+        <!-- Slide 3: Project Overview -->
+        <section>
+          <h1>🏗️ Proyecto: AI Documentation Hub</h1>
+          <h2>Sistema automatizado de documentación con IA</h2>
+          <ul>
+            <li>📚 <strong>Generación automática</strong> de documentación técnica</li>
+            <li>🔄 <strong>Actualización continua</strong> con cada commit</li>
+            <li>🎯 <strong>Subagentes especializados</strong> por tipo de archivo</li>
+            <li>📊 <strong>Dashboard interactivo</strong> con métricas</li>
+            <li>🚀 <strong>Deploy automático</strong> en GitHub Pages</li>
+          </ul>
+          <div class="terminal">
+            <span class="terminal-prompt">$</span> claude-code create ai-docs-hub --with-sdk --with-ci
+          </div>
+        </section>
+
+        <!-- Slide 4: Claude SDK -->
+        <section>
+          <h1>🔧 Claude SDK - Parte 1</h1>
+          <h2>Instalación y configuración básica</h2>
+          <pre><code class="language-bash"># Instalación del SDK
+npm install @anthropic-ai/sdk
+
+# Configuración de API Key
+export ANTHROPIC_API_KEY="sk-ant-..."</code></pre>
+          <h3>Ejemplo básico de uso:</h3>
+          <pre><code class="language-javascript">import Anthropic from '@anthropic-ai/sdk';
+
+const claude = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
+});
+
+const response = await claude.messages.create({
+  model: 'claude-3-5-sonnet-20241022',
+  max_tokens: 1024,
+  messages: [{
+    role: 'user',
+    content: 'Genera documentación para esta función'
+  }]
+});</code></pre>
+        </section>
+
+        <!-- Slide 5: Claude SDK Advanced -->
+        <section>
+          <h1>🔧 Claude SDK - Parte 2</h1>
+          <h2>Streaming y manejo de contexto</h2>
+          <pre><code class="language-javascript">// Streaming de respuestas
+const stream = await claude.messages.create({
+  model: 'claude-3-5-sonnet-20241022',
+  max_tokens: 4096,
+  stream: true,
+  system: "Eres un experto en documentación técnica",
+  messages: [/* ... */]
+});
+
+for await (const chunk of stream) {
+  process.stdout.write(chunk.delta?.text || '');
+}
+
+// Manejo de contexto con CLAUDE.md
+const context = await readFile('./CLAUDE.md', 'utf-8');
+const enrichedPrompt = `${context}\n\n${userPrompt}`;</code></pre>
+          <p><span class="badge badge-pro">PRO TIP</span> Usa streaming para mejorar la UX en aplicaciones real-time</p>
+        </section>
+
+        <!-- Slide 6: Subagents Introduction -->
+        <section>
+          <h1>🤖 Subagentes Especializados</h1>
+          <h2>División inteligente del trabajo</h2>
+          <ul>
+            <li>📝 <strong>Document Generator:</strong> Crea documentación markdown</li>
+            <li>🔍 <strong>Code Analyzer:</strong> Analiza complejidad y calidad</li>
+            <li>✅ <strong>Test Writer:</strong> Genera tests unitarios</li>
+            <li>🎨 <strong>Style Checker:</strong> Valida estándares de código</li>
+            <li>📊 <strong>Metrics Collector:</strong> Recopila métricas del proyecto</li>
+          </ul>
+          <blockquote>
+            "Cada subagente es un experto en su dominio específico"
+          </blockquote>
+        </section>
+
+        <!-- Slide 7: Subagents Implementation -->
+        <section>
+          <h1>🤖 Implementación de Subagentes</h1>
+          <pre><code class="language-typescript">// subagents/document-generator.ts
+export class DocumentGenerator {
+  async generateDocs(filePath: string): Promise<string> {
+    const code = await readFile(filePath);
+    
+    const response = await claude.messages.create({
+      model: 'claude-3-5-sonnet-20241022',
+      system: 'Eres un experto en generar documentación técnica',
+      messages: [{
+        role: 'user',
+        content: `Genera documentación para:\n${code}`
+      }]
+    });
+    
+    return response.content[0].text;
+  }
+}
+
+// Uso con Task tool
+await Task({
+  description: "Generar docs",
+  prompt: "Genera documentación para todos los archivos .ts",
+  subagent_type: "document-generator"
+});</code></pre>
+        </section>
+
+        <!-- Slide 8: Scripting with Claude -->
+        <section>
+          <h1>📝 Scripting Avanzado</h1>
+          <h2>Automatización de flujos de trabajo</h2>
+          <pre><code class="language-bash">#!/usr/bin/env node
+// claude-docs.js
+
+import { exec } from 'child_process';
+import { promisify } from 'util';
+
+const execAsync = promisify(exec);
+
+async function generateProjectDocs() {
+  // 1. Analizar archivos modificados
+  const { stdout } = await execAsync('git diff --name-only HEAD~1');
+  const files = stdout.split('\n').filter(f => f.endsWith('.ts'));
+  
+  // 2. Generar documentación para cada archivo
+  for (const file of files) {
+    console.log(`📝 Procesando ${file}...`);
+    await execAsync(`claude-code analyze ${file} --output docs/`);
+  }
+  
+  // 3. Actualizar índice
+  await execAsync('claude-code index docs/ --format markdown');
+}
+
+generateProjectDocs();</code></pre>
+        </section>
+
+        <!-- Slide 9: GitHub Actions Setup -->
+        <section>
+          <h1>🚀 CI/CD con GitHub Actions</h1>
+          <h2>Pipeline de documentación automática</h2>
+          <pre><code class="language-yaml"># .github/workflows/docs.yml
+name: Generate Documentation
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  documentation:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Claude SDK
+        run: |
+          npm install @anthropic-ai/sdk
+          echo "ANTHROPIC_API_KEY=${{ secrets.CLAUDE_KEY }}" >> $GITHUB_ENV
+      
+      - name: Generate Docs
+        run: npm run generate:docs
+      
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs</code></pre>
+        </section>
+
+        <!-- Slide 10: GitHub Key Configuration -->
+        <section>
+          <h1>🔑 GitHub Key con Plan Max</h1>
+          <h2>Configuración especial para Claude Pro Max</h2>
+          <ol>
+            <li>Ve a <strong>GitHub Settings → Developer settings</strong></li>
+            <li>Crea un <strong>Personal Access Token (classic)</strong></li>
+            <li>Permisos requeridos:
+              <ul>
+                <li><code>repo</code> - Control total de repositorios</li>
+                <li><code>workflow</code> - Actualizar GitHub Actions</li>
+                <li><code>write:packages</code> - Publicar paquetes</li>
+              </ul>
+            </li>
+            <li>En Claude Code: <code>claude-code config github.token YOUR_TOKEN</code></li>
+          </ol>
+          <div class="terminal">
+            <span class="terminal-prompt">$</span> gh auth login --with-token < token.txt<br>
+            <span class="terminal-prompt">$</span> claude-code mcp install github
+          </div>
+          <p><span class="badge badge-new">NEW</span> Plan Max incluye 5000 requests/día al API de GitHub</p>
+        </section>
+
+        <!-- Slide 11: Powerline Configuration -->
+        <section>
+          <h1>🎨 Powerline con Colores Personalizados</h1>
+          <h2>Configuración visual del status</h2>
+          <pre><code class="language-json">// .claude/settings.json
+{
+  "powerline": {
+    "enabled": true,
+    "segments": [
+      {
+        "type": "project",
+        "background": "#37ab93",
+        "foreground": "#ffffff"
+      },
+      {
+        "type": "branch",
+        "background": "#bd93f9",
+        "foreground": "#282a36"
+      },
+      {
+        "type": "status",
+        "colors": {
+          "success": "#50fa7b",
+          "error": "#ff5555",
+          "warning": "#f1fa8c",
+          "info": "#8be9fd"
+        }
+      },
+      {
+        "type": "context",
+        "background": "#44475a",
+        "foreground": "#f8f8f2",
+        "format": "[{tokens}/{max_tokens}]"
+      }
+    ]
+  }
+}</code></pre>
+        </section>
+
+        <!-- Slide 12: Powerline Advanced -->
+        <section>
+          <h1>🎨 Powerline Avanzada</h1>
+          <h2>Indicadores dinámicos de estado</h2>
+          <div class="terminal">
+            <span style="background:#37ab93;color:white;padding:2px 6px;">📁 ai-docs-hub</span>
+            <span style="background:#bd93f9;color:#282a36;padding:2px 6px;">🔀 main</span>
+            <span style="background:#50fa7b;color:#282a36;padding:2px 6px;">✓ ready</span>
+            <span style="background:#44475a;color:#f8f8f2;padding:2px 6px;">[45k/200k]</span>
+          </div>
+          <h3>Scripts para cambio de color dinámico:</h3>
+          <pre><code class="language-bash">#!/bin/bash
+# claude-status.sh
+
+if [ "$1" == "working" ]; then
+  claude-code config powerline.status.color "#f1fa8c"
+elif [ "$1" == "done" ]; then
+  claude-code config powerline.status.color "#50fa7b"
+elif [ "$1" == "error" ]; then
+  claude-code config powerline.status.color "#ff5555"
+fi</code></pre>
+          <p><span class="badge badge-beta">BETA</span> Próximamente: Integración con tmux y zsh</p>
+        </section>
+
+        <!-- Slide 13: Complete Workflow -->
+        <section>
+          <h1>🔄 Flujo Completo de Trabajo</h1>
+          <h2>Integrando todas las piezas</h2>
+          <ol>
+            <li>📝 <strong>Desarrollo:</strong> Escribes código con Claude Code</li>
+            <li>🤖 <strong>Subagentes:</strong> Analizan y documentan automáticamente</li>
+            <li>📊 <strong>SDK:</strong> Procesa y enriquece la documentación</li>
+            <li>🔧 <strong>Scripts:</strong> Automatizan tareas repetitivas</li>
+            <li>🚀 <strong>CI/CD:</strong> Despliega cambios automáticamente</li>
+            <li>🎨 <strong>Powerline:</strong> Visualiza el estado en tiempo real</li>
+          </ol>
+          <blockquote>
+            "Un ecosistema completo de desarrollo asistido por IA"
+          </blockquote>
+        </section>
+
+        <!-- Slide 14: Live Demo Structure -->
+        <section>
+          <h1>🎬 Demo en Vivo</h1>
+          <h2>Lo que vamos a construir juntos</h2>
+          <ul>
+            <li>✅ Crear proyecto base con SDK integrado</li>
+            <li>✅ Configurar subagentes especializados</li>
+            <li>✅ Implementar scripts de automatización</li>
+            <li>✅ Configurar GitHub Actions</li>
+            <li>✅ Generar token de GitHub (Plan Max)</li>
+            <li>✅ Personalizar powerline con colores</li>
+            <li>✅ Deploy automático a producción</li>
+          </ul>
+          <p><strong>Tiempo estimado:</strong> 45 minutos de código puro 🔥</p>
+        </section>
+
+        <!-- Slide 15: Best Practices -->
+        <section>
+          <h1>✨ Mejores Prácticas</h1>
+          <h2>Tips para maximizar productividad</h2>
+          <ul>
+            <li>🎯 <strong>Contexto claro:</strong> Mantén CLAUDE.md actualizado</li>
+            <li>🔄 <strong>Subagentes pequeños:</strong> Un propósito por agente</li>
+            <li>📝 <strong>Scripts reutilizables:</strong> Crea tu librería personal</li>
+            <li>🔒 <strong>Seguridad:</strong> Nunca hardcodees API keys</li>
+            <li>📊 <strong>Métricas:</strong> Mide el impacto de la automatización</li>
+            <li>🎨 <strong>Visual feedback:</strong> Usa powerline para estado</li>
+          </ul>
+          <blockquote>
+            "La automatización bien hecha te da tiempo para innovar"
+          </blockquote>
+        </section>
+
+        <!-- Slide 16: Common Pitfalls -->
+        <section>
+          <h1>⚠️ Errores Comunes</h1>
+          <h2>Lo que debes evitar</h2>
+          <ul>
+            <li>❌ <strong>Contexto excesivo:</strong> No más de 100K tokens</li>
+            <li>❌ <strong>Subagentes genéricos:</strong> Especializa siempre</li>
+            <li>❌ <strong>Scripts sin error handling:</strong> Siempre valida</li>
+            <li>❌ <strong>CI/CD sin tests:</strong> Nunca saltes validaciones</li>
+            <li>❌ <strong>Tokens en el código:</strong> Usa secrets siempre</li>
+            <li>❌ <strong>Powerline sobrecargada:</strong> Menos es más</li>
+          </ul>
+          <p><em>Aprende de los errores de otros para avanzar más rápido</em></p>
+        </section>
+
+        <!-- Slide 17: Advanced Tips -->
+        <section>
+          <h1>🚀 Tips Avanzados</h1>
+          <h2>Para llevar tu flujo al siguiente nivel</h2>
+          <ul>
+            <li>🔧 <strong>Cache inteligente:</strong> Reutiliza respuestas del SDK</li>
+            <li>🤖 <strong>Chains de subagentes:</strong> Conecta agentes en serie</li>
+            <li>📝 <strong>Templates dinámicos:</strong> Genera código desde plantillas</li>
+            <li>🔄 <strong>Webhooks:</strong> Integra con Slack, Discord, etc.</li>
+            <li>📊 <strong>Analytics:</strong> Trackea uso y optimiza costos</li>
+            <li>🎨 <strong>Themes:</strong> Crea tus propios temas de powerline</li>
+          </ul>
+          <div class="terminal">
+            <span class="terminal-prompt">$</span> claude-code perf --last-30-days<br>
+            📊 Ahorro de tiempo: 147 horas<br>
+            💰 Valor generado: $14,700 USD
+          </div>
+        </section>
+
+        <!-- Slide 18: Resources -->
+        <section>
+          <h1>📚 Recursos y Referencias</h1>
+          <h2>Para profundizar después del taller</h2>
+          <ul>
+            <li>📖 <strong>Documentación oficial:</strong> <a href="https://docs.anthropic.com/claude/docs">docs.anthropic.com</a></li>
+            <li>🔧 <strong>SDK Reference:</strong> <a href="https://github.com/anthropics/anthropic-sdk-typescript">GitHub SDK TypeScript</a></li>
+            <li>🤖 <strong>Subagent Examples:</strong> <a href="https://github.com/anthropics/claude-code-examples">Claude Code Examples</a></li>
+            <li>📝 <strong>GitHub Actions:</strong> <a href="https://docs.github.com/actions">GitHub Actions Docs</a></li>
+            <li>🎨 <strong>Powerline Themes:</strong> <a href="https://github.com/powerline/powerline">Powerline GitHub</a></li>
+            <li>💬 <strong>Discord Comunidad:</strong> discord.gg/fixtergeek</li>
+          </ul>
+        </section>
+
+        <!-- Slide 19: Homework -->
+        <section>
+          <h1>📝 Tarea para la Próxima Sesión</h1>
+          <h2>Practica lo aprendido</h2>
+          <ol>
+            <li>🔧 Crea tu propio subagente especializado</li>
+            <li>📝 Implementa un script de automatización personal</li>
+            <li>🚀 Configura CI/CD en uno de tus proyectos</li>
+            <li>🎨 Personaliza tu powerline con tu paleta de colores</li>
+            <li>📊 Documenta métricas de productividad (antes/después)</li>
+          </ol>
+          <blockquote>
+            "La práctica deliberada es el camino a la maestría"
+          </blockquote>
+          <p><strong>Comparte tus resultados en Discord con #ClaudeCodeS2</strong></p>
+        </section>
+
+        <!-- Slide 20: Next Session Preview -->
+        <section>
+          <h1>🔮 Próxima Sesión: MCP y Automatización Total</h1>
+          <h2>Lo que viene el 26 de agosto</h2>
+          <ul>
+            <li>🔌 <strong>MCPs JSON:</strong> Sin programar, solo configurar</li>
+            <li>🐙 <strong>GitHub MCP Avanzado:</strong> Control total de repos</li>
+            <li>🌐 <strong>Automatización Web:</strong> Scraping y testing</li>
+            <li>🚀 <strong>Pipelines Complejos:</strong> Multi-stage deployments</li>
+            <li>🔧 <strong>Custom MCPs:</strong> Crea tus propias integraciones</li>
+            <li>🎯 <strong>Proyecto Final:</strong> SaaS completo automatizado</li>
+          </ul>
+          <p><span class="badge badge-pro">NIVEL PRO</span> Prepárate para el siguiente nivel</p>
+        </section>
+
+        <!-- Slide 21: Q&A -->
+        <section class="lead">
+          <h1>💬 Q&A - Sesión 2</h1>
+          <h2>¡Es tu momento de preguntar!</h2>
+          <h3>Temas de hoy:</h3>
+          <ul style="text-align: left; display: inline-block;">
+            <li>Claude SDK y su implementación</li>
+            <li>Arquitectura de subagentes</li>
+            <li>Scripting y automatización</li>
+            <li>CI/CD con GitHub Actions</li>
+            <li>Configuración de GitHub Key</li>
+            <li>Personalización de powerline</li>
+          </ul>
+          <p><strong>Discord:</strong> discord.gg/fixtergeek</p>
+          <p><strong>Twitter:</strong> @blissito | @fixtergeek</p>
+          <h3 style="color: #bd93f9; margin-top: 30px;">¡Nos vemos en la sesión 3! 🚀</h3>
+        </section>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.5/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.5/plugin/notes/notes.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.5/plugin/markdown/markdown.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.5/plugin/highlight/highlight.min.js"></script>
+
+    <script>
+      Reveal.initialize({
+        hash: true,
+        controls: true,
+        progress: true,
+        center: true,
+        transition: 'slide',
+        backgroundTransition: 'fade',
+
+        plugins: [RevealMarkdown, RevealHighlight, RevealNotes],
+      });
+    </script>
+  </body>
+</html>

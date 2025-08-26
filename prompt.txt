@@ -1,5 +1,0 @@
-Por favor analiza este archivo
-
-{{ file.Read "presentacion-claude-code.html" }}
-
-GOOGLE_API_KEY=AIzaSyChvSZl6zbQRNYHsusH17I50vNF7vpcYMY

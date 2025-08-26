@@ -1,80 +1,54 @@
-# 📚 Simple Documentation Generator - Tutorial Educativo
+# Astro Starter Kit: Basics
 
-Un script educativo para aprender a automatizar la documentación con Claude Code. Perfecto para principiantes que quieren entender cómo funciona el scripting con IA.
-
-## 🎯 ¿Qué Aprenderás?
-
-Este proyecto te enseña:
-
-- ✅ Cómo escanear archivos en un proyecto
-- ✅ Integración básica con Claude Code CLI
-- ✅ Manejo de archivos con Node.js
-- ✅ Async/await y promesas
-- ✅ Generación de documentación con IA
-
-## 🚀 Inicio Rápido
-
-### 1. Preparación
-
-```bash
-# Clona o crea el archivo
-touch simple-doc-generator.js
-
-# Hazlo ejecutable
-chmod +x simple-doc-generator.js
-
-# Instala Claude Code CLI (si no lo tienes)
-npm install -g @anthropic-ai/claude-code
+```sh
+npm create astro@latest -- --template basics
 ```
 
-### 2. Configuración de API Key
+[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/basics)
+[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/basics)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/basics/devcontainer.json)
 
-```bash
-# Configura tu API key de Anthropic
-export ANTHROPIC_API_KEY="tu-api-key-aqui"
+> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+
+![just-the-basics](https://github.com/withastro/astro/assets/2244813/a0a5533c-a856-4198-8470-2d67b1d7c554)
+
+## 🚀 Project Structure
+
+Inside of your Astro project, you'll see the following folders and files:
+
+```text
+/
+├── public/
+│   └── favicon.svg
+├── src/
+│   ├── components/
+│   │   └── Card.astro
+│   ├── layouts/
+│   │   └── Layout.astro
+│   └── pages/
+│       └── index.astro
+└── package.json
 ```
 
-### 3. Uso Básico
+Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
 
-```bash
-# Ver ayuda
-node simple-doc-generator.js --help
+There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
 
-# Modo educativo (explica el proceso)
-node simple-doc-generator.js --learn
+Any static assets, like images, can be placed in the `public/` directory.
 
-# Generar documentación
-node simple-doc-generator.js
-```
+## 🧞 Commands
 
-## 🏗️ Estructura del Proyecto
+All commands are run from the root of the project, from a terminal:
 
-```
-mi-proyecto/
-├── simple-doc-generator.js   # El script principal
-├── docs/                      # Carpeta de salida
-│   ├── README.md             # Índice generado
-│   ├── archivo1.md           # Doc de archivo1.js
-│   └── archivo2.md           # Doc de archivo2.js
-└── src/                      # Tu código fuente
-    ├── archivo1.js
-    └── archivo2.js
-```
+| Command                   | Action                                           |
+| :------------------------ | :----------------------------------------------- |
+| `npm install`             | Installs dependencies                            |
+| `npm run dev`             | Starts local dev server at `localhost:4321`      |
+| `npm run build`           | Build your production site to `./dist/`          |
+| `npm run preview`         | Preview your build locally, before deploying     |
+| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
+| `npm run astro -- --help` | Get help using the Astro CLI                     |
 
-## 💡 Tips para Principiantes
+## 👀 Want to learn more?
 
-- Empieza con un proyecto pequeño de 2-3 archivos
-- Lee los errores con atención
-- Revisa y ajusta la documentación generada
-- Experimenta con diferentes prompts para mejorar los resultados
-
-## 🚀 Próximos Pasos
-
-1. Personalizar tipos de archivo
-2. Modificar prompts de documentación
-3. Agregar estadísticas de código
-4. Integrar con flujos de trabajo de Git
-
----
-
-_Creado con ❤️ para el Taller de Claude Code Power Users_
+Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).

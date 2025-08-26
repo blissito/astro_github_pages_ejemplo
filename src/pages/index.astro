@@ -33,10 +33,10 @@ import Card from '../components/Card.astro';
 				</linearGradient>
 			</defs>
 		</svg>
-		<h1>Welcome to <span class="text-gradient">Git Subtrees Demo</span></h1>
+		<h1>Welcome to <span class="text-gradient">Professional Git Subtrees</span></h1>
 		<p class="instructions">
-			🌳 This page was modified through a Git Subtree! <br />
-			<strong>Demo:</strong> We're demonstrating how to modify files in a subtree and push changes back to the original repository.
+			🚀 This demonstrates the PROPER workflow: Subtree → Feature Branch → Pull Request → Code Review! <br />
+			<strong>Best Practice:</strong> Always use PRs for team collaboration and code quality. Never push directly to main in production environments.
 		</p>
 		<ul role="list" class="link-card-grid">
 			<Card
@@ -55,9 +55,19 @@ import Card from '../components/Card.astro';
 				body="Step-by-step tutorial on using Git subtrees effectively."
 			/>
 			<Card
+				href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests"
+				title="Pull Request Best Practices"
+				body="Learn how to create professional PRs with proper reviews and collaboration."
+			/>
+			<Card
 				href="https://blog.developer.atlassian.com/the-power-of-git-subtree/"
 				title="Subtree vs Submodule"
 				body="Understand when to use subtrees vs submodules in your projects."
+			/>
+			<Card
+				href="https://www.atlassian.com/git/tutorials/making-a-pull-request"
+				title="Feature Branch Workflow"
+				body="Master the feature branch workflow for safer, more collaborative development."
 			/>
 		</ul>
 	</main>

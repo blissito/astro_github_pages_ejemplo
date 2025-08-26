@@ -9,6 +9,7 @@ set -e
 # Función para obtener configuración de subtree
 get_subtree_config() {
     case $1 in
+        astro-blog) echo "astro-blog https://github.com/blissito/astro_github_pages_ejemplo.git main" ;;
         components) echo "src/components https://github.com/ejemplo/ui-components.git main" ;;
         utils) echo "lib/utils https://github.com/ejemplo/shared-utils.git main" ;;
         docs) echo "documentation https://github.com/ejemplo/docs-template.git main" ;;
@@ -17,7 +18,7 @@ get_subtree_config() {
 }
 
 # Lista de subtrees disponibles
-SUBTREE_NAMES="components utils docs"
+SUBTREE_NAMES="astro-blog components utils docs"
 
 # Colores para output
 RED='\033[0;31m'
